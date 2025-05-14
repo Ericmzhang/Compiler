@@ -1,0 +1,6 @@
+cargo run ./src/test.c
+gcc -m32 -o output src/test.s
+./src/test
+echo $?
+
+gcc ./src/test.c -o c
