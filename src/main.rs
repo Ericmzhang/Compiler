@@ -6,6 +6,7 @@ use std::fs::{File,OpenOptions};
 use std::io::{Write};
 use std::env;
 use std::process::Command;
+use std::sync::atomic::{AtomicUsize, Ordering};
 mod lex;
 mod tokens;
 mod parser;
@@ -132,30 +133,129 @@ fn generate_term_ass(node: &TermType, output_file: &String) -> std::io::Result<(
     Ok(())
 }
 
-fn generate_exp_ass(node: &ExpType, output_file: &String) -> std::io::Result<()> {
+fn generate_exp_ass(node: &ExpType, output_file: &String) -> std::io::Result<()> { 
+    static CLAUSE: AtomicUsize = AtomicUsize::new(2);
+    static END: AtomicUsize = AtomicUsize::new(1);
     let mut file = OpenOptions::new()
     .write(true)
     .append(true)
     .open(output_file)?;
+    // println!("{:?}", node);
     match &node {
         ExpType::BinOp(bin_op) => {
-            generate_ass(&*bin_op.left, output_file)?;
-            file.write_all(b"   push    %eax\n")?;
-            generate_ass(&*bin_op.right, output_file)?;
             match &bin_op.operator {
-                Token::Addition => {
-                    file.write_all(b"   pop     %ecx\n")?;
-                    file.write_all(b"   addl    %ecx,   %eax\n")?;
+                Token::Or | Token::And =>{
+                    generate_ass(&*bin_op.left, output_file)?;
+                    match &bin_op.operator{
+                        Token::Or =>{
+                            let clause = CLAUSE.fetch_add(1, Ordering::SeqCst);
+                            let end = END.fetch_add(1, Ordering::SeqCst);
+                            file.write_all(b"   cmpl    $0,   %eax\n")?;
+                            let je2clause = format!("   je      _clause{}\n", clause);
+                            file.write_all(je2clause.as_bytes())?;
+                            file.write_all(b"   movl    $1,   %eax\n")?;
+                            let jmp2end = format!("   jmp      _end{}\n", end);
+                            file.write_all(jmp2end.as_bytes())?;    
+                            let clause_label = format!("_clause{}:\n", clause);
+                            file.write_all(clause_label.as_bytes())?;
+                            generate_ass(&*bin_op.right, output_file)?;
+                            file.write_all(b"   cmpl $0, %eax\n")?;
+                            file.write_all(b"   movl $0, %eax\n")?;
+                            file.write_all(b"   setne %al \n")?;
+                            let end_label = format!("_end{}:\n", end);
+                            file.write_all(end_label.as_bytes())?;
+                        }   
+                        Token::And =>{
+                            let clause = CLAUSE.fetch_add(1, Ordering::SeqCst);
+                            let end = END.fetch_add(1, Ordering::SeqCst);
+                            file.write_all(b"   cmpl    $0,   %eax\n")?;
+                            let je2clause = format!("   jne      _clause{}\n", clause);
+                            file.write_all(je2clause.as_bytes())?;
+                            let jmp2end = format!("   jmp      _end{}\n", end);
+                            file.write_all(jmp2end.as_bytes())?;    
+                            let clause_label = format!("_clause{}:\n", clause);
+                            file.write_all(clause_label.as_bytes())?;
+                            generate_ass(&*bin_op.right, output_file)?;
+                            file.write_all(b"   cmpl $0, %eax\n")?;
+                            file.write_all(b"   movl $0, %eax\n")?;
+                            file.write_all(b"   setne %al \n")?;
+                            let end_label = format!("_end{}:\n", end);
+                            file.write_all(end_label.as_bytes())?;
+                        }
+                        _ => panic!("Unsupported binary operator")                 
+                    }
+                 
                 }
-                Token::Negation => {
-                    file.write_all(b"   movl    %eax,   %ecx\n")?;
-                    file.write_all(b"   pop     %eax\n")?;
-                    file.write_all(b"   subl    %ecx,   %eax\n")?;
+                Token::Eq | Token::Neq | Token::Lt | Token::Leq | Token::Gt | Token::Geq | Token::Addition | Token::Negation =>{
+                    generate_ass(&*bin_op.left, output_file)?;
+                    file.write_all(b"   push    %eax\n")?;
+                    generate_ass(&*bin_op.right, output_file)?;
+                    match &bin_op.operator {
+                        Token::Eq =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   sete   %al  \n")?;
+                        }
+                        Token::Neq =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   setne   %al  \n")?;
+                        }
+                        Token::Lt =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   setl   %al  \n")?;
+                        }
+                        Token::Leq =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   setle   %al  \n")?;
+                        }
+                        Token::Gt =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   setg   %al  \n")?;
+                        }
+                        Token::Geq =>{
+                            file.write_all(b"   pop    %ecx\n")?;
+                            file.write_all(b"   cmpl   %eax, %ecx\n")?;
+                            file.write_all(b"   movl   $0, %eax\n")?;
+                            file.write_all(b"   setge   %al  \n")?;
+                        }
+                        Token::Addition => {
+                            file.write_all(b"   pop     %ecx\n")?;
+                            file.write_all(b"   addl    %ecx,   %eax\n")?;
+                        }
+                        Token::Negation => {
+                            file.write_all(b"   movl    %eax,   %ecx\n")?;
+                            file.write_all(b"   pop     %eax\n")?;
+                            file.write_all(b"   subl    %ecx,   %eax\n")?;
+                        }
+                        _ => panic!("Unsupported binary operator")
+                    }
                 }
+                
                 _ => panic!("Unsupported binary operator"),
             }
         }
         ExpType::Term(term) => {
+            generate_ass(&**term, output_file)?;
+        }
+        ExpType::LogAndExp(term) => {
+            generate_ass(&**term, output_file)?;
+        }
+        ExpType::EqExp(term) => {
+            generate_ass(&**term, output_file)?;
+        }
+        ExpType::RelationalExp(term) => {
+            generate_ass(&**term, output_file)?;
+        }
+        ExpType::AdditiveExp(term) => {
             generate_ass(&**term, output_file)?;
         }
         _ => {}

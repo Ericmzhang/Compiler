@@ -1,8 +1,9 @@
 .global main
 main:
-   movl    $1, %eax
+   movl    $0, %eax
    cmpl    $0,   %eax
-   jne      _clause2
+   je      _clause2
+   movl    $1,   %eax
    jmp      _end1
 _clause2:
    movl    $0, %eax

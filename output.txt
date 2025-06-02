@@ -1,0 +1,1037 @@
+====================================================
+STAGE 4
+===================Valid Programs===================
+gt_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/gt_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Gt
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+skip_on_failure_short_circuit_or..................\n target/debug/cool_cat_compiler ./stage_4/valid/skip_on_failure_short_circuit_or.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Int
+Identifier("a")
+Number(1)
+SemiColon
+Int
+Identifier("b")
+Number(0)
+SemiColon
+Identifier("a")
+Or
+LeftParen
+Identifier("b")
+Number(5)
+RightParen
+SemiColon
+Return
+Identifier("b")
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+NOT IMPLEMENTED
+ge_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/ge_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Geq
+Number(1)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 1
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+skip_on_failure_short_circuit_and.................\n target/debug/cool_cat_compiler ./stage_4/valid/skip_on_failure_short_circuit_and.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Int
+Identifier("a")
+Number(0)
+SemiColon
+Int
+Identifier("b")
+Number(0)
+SemiColon
+Identifier("a")
+And
+LeftParen
+Identifier("b")
+Number(5)
+RightParen
+SemiColon
+Return
+Identifier("b")
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+NOT IMPLEMENTED
+lt_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/lt_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Lt
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+ne_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/ne_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(0)
+Neq
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+precedence_4......................................\n target/debug/cool_cat_compiler ./stage_4/valid/precedence_4.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(2)
+Eq
+Number(2)
+Or
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+precedence_2......................................\n target/debug/cool_cat_compiler ./stage_4/valid/precedence_2.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+LeftParen
+Number(1)
+Or
+Number(0)
+RightParen
+And
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+FAIL
+or_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/or_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Or
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+and_false.........................................\n target/debug/cool_cat_compiler ./stage_4/valid/and_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+And
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+FAIL
+gt_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/gt_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Gt
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+precedence_3......................................\n target/debug/cool_cat_compiler ./stage_4/valid/precedence_3.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(2)
+Eq
+Number(2)
+Gt
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+skip_on_failure_multi_short_circuit...............\n target/debug/cool_cat_compiler ./stage_4/valid/skip_on_failure_multi_short_circuit.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Int
+Identifier("a")
+Number(0)
+SemiColon
+Identifier("a")
+Or
+LeftParen
+Identifier("a")
+Number(3)
+RightParen
+Or
+LeftParen
+Identifier("a")
+Number(4)
+RightParen
+SemiColon
+Return
+Identifier("a")
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+NOT IMPLEMENTED
+precedence........................................\n target/debug/cool_cat_compiler ./stage_4/valid/precedence.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Or
+Number(0)
+And
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+ge_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/ge_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Geq
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+and_true..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/and_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+And
+Negation
+Number(1)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+Factor
+OK
+eq_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/eq_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Eq
+Number(1)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+ne_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/ne_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Negation
+Number(1)
+Neq
+Negation
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+Factor
+OK
+eq_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/eq_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Eq
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+or_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/or_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(0)
+Or
+Number(0)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+le_true...........................................\n target/debug/cool_cat_compiler ./stage_4/valid/le_true.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(0)
+Leq
+Number(2)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 0
+parse expression additive
+parse term
+parse factor: 2
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+le_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/le_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(1)
+Leq
+Negation
+Number(1)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 1
+parse expression additive
+parse term
+parse factor: 1
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+Factor
+OK
+lt_false..........................................\n target/debug/cool_cat_compiler ./stage_4/valid/lt_false.c
+PRINTING TOKENS
+
+Int
+Identifier("main")
+LeftParen
+RightParen
+LeftBrace
+Return
+Number(2)
+Lt
+Number(1)
+SemiColon
+RightBrace
+EOF
+
+STARTING PARSING
+
+parse expression or
+parse expression and
+parse expression equality
+parse expression relational
+parse expression additive
+parse term
+parse factor: 2
+parse expression additive
+parse term
+parse factor: 1
+
+GENERATING ASSEMBLY
+
+Func
+Statement
+Expression
+Exp Type
+Term
+Factor
+Exp Type
+Exp Type
+Term
+Factor
+OK
+===================Invalid Programs=================
+missing_first_op..................................OK
+missing_mid_op....................................OK
+missing_second_op.................................OK
+missing_semicolon.................................OK
+===================Stage 4 Summary=================
+22 successes, 2 failures
+===================TOTAL SUMMARY====================
+22 successes, 2 failures

@@ -46,14 +46,14 @@ fn parse_statement(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -
     statement
 }
 
-fn parse_expression(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Exp{
-    println!("parse expresson");
-    let mut exp1= ExpType::Term(Box::new(parse_term(tok)));
+fn parse_expression_general <F>(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>, subparser: F, operators: &[Token], wrap_rhs: fn(Box<ExpType>)->ExpType) -> ExpType where
+F: Fn(&mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType, {  //general function for parsing different types of expression
+    let mut exp1= subparser(tok);
     while let Some(token) = tok.peek() {
-        if **token == Token::Addition || **token == Token::Negation {
+        if(operators.contains(token)){
             let op = (*token).clone();
-            tok.next(); // advance manually if needed
-            let exp2 = parse_term(tok);
+            tok.next();
+            let exp2 = wrap_rhs(Box::new(subparser(tok)));
             let bin_op = ExpBinOp::new(op,
                 Box::new(exp1),
                 Box::new(exp2));
@@ -63,11 +63,39 @@ fn parse_expression(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) 
             break;
         }
     }
-    let exp = Exp::new(exp1);
-    exp
+    exp1
 }
 
-fn parse_term(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Term{
+fn parse_expression(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Exp{
+    Exp::new(parse_or(tok))
+}
+
+fn parse_or(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
+    println!("parse expression or");
+    parse_expression_general(tok, parse_logical_and, &[Token::Or], ExpType::LogAndExp)
+}
+
+fn parse_logical_and(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
+    println!("parse expression and");
+    parse_expression_general(tok, parse_equality, &[Token::And], ExpType::EqExp)
+}
+
+fn parse_equality(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
+    println!("parse expression equality");
+    parse_expression_general(tok, parse_relational, &[Token::Eq, Token::Neq], ExpType::RelationalExp)
+}
+
+fn parse_relational(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
+    println!("parse expression relational");
+    parse_expression_general(tok,parse_additive,&[Token::Lt, Token::Leq, Token::Gt, Token::Geq],ExpType::AdditiveExp)
+}
+
+fn parse_additive(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
+    println!("parse expression additive");
+    parse_expression_general(tok,parse_term,&[Token::Addition, Token::Negation],ExpType::AdditiveExp)
+}
+
+fn parse_term(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType{
     println!("parse term");
     let mut factor1= TermType::Factor(Box::new(parse_factor(tok)));
     while let Some(token) = tok.peek() {
@@ -84,7 +112,7 @@ fn parse_term(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Ter
             break;
         }
     }
-    let term = Term::new(factor1);
+    let term = ExpType::Term(Box::new(Term::new(factor1)));
     term
 }
 

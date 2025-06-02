@@ -5,7 +5,8 @@ main:
    jne      _clause2
    jmp      _end1
 _clause2:
-   movl    $0, %eax
+   movl    $1, %eax
+   neg     %eax
    cmpl $0, %eax
    movl $0, %eax
    setne %al 

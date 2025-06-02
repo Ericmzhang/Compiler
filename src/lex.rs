@@ -24,10 +24,54 @@ pub fn lex(input_file: &String) -> Vec<Token> {
             ';' => tokens.push(Token::SemiColon),
             '-' => tokens.push(Token::Negation),
             '~' => tokens.push(Token::BitwiseComplement),
-            '!' => tokens.push(Token::LogicalNegation),
             '+' => tokens.push(Token::Addition),
             '*' => tokens.push(Token::Multiplication),
             '/' => tokens.push(Token::Division),
+            '!' => {
+                if iter.peek() == Some(&'=') {
+                    iter.next();
+                    tokens.push(Token::Neq);
+                }
+                else {
+                    tokens.push(Token::LogicalNegation);
+                }
+            }
+            '&' => {
+                if iter.peek() == Some(&'&') {
+                    iter.next();
+                    tokens.push(Token::And);
+                }
+            }
+            '|' => {
+                if iter.peek() == Some(&'|') {
+                    iter.next();
+                    tokens.push(Token::Or);
+                }
+            }
+            '=' => {
+                if iter.peek() == Some(&'=') {
+                    iter.next();
+                    tokens.push(Token::Eq);
+                }
+            }
+            '<' => {
+                if iter.peek() == Some(&'=') {
+                    iter.next();
+                    tokens.push(Token::Leq);
+                }
+                else{
+                    tokens.push(Token::Lt);
+                }
+            }
+            '>' => {
+                if iter.peek() == Some(&'=') {
+                    iter.next();
+                    tokens.push(Token::Geq);
+                }
+                else{
+                    tokens.push(Token::Gt);
+                }
+            }
             '0'..='9' => {
                 let n: i64 = iter::once(ch)
                     .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_ascii_digit())))
@@ -37,7 +81,6 @@ pub fn lex(input_file: &String) -> Vec<Token> {
 
                 tokens.push(Token::Number(n));
             },
-
             'A'..='z' => {
                 let n: String = iter::once(ch)
                     .chain(from_fn(|| iter.by_ref().next_if(|s| s.is_ascii_alphabetic())))
