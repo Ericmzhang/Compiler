@@ -1,5 +1,7 @@
 .global main
 main:
+   push   %ebp
+   movl   %esp, %ebp
    movl    $1, %eax
    cmpl    $0,   %eax
    jne      _clause2
@@ -11,4 +13,6 @@ _clause2:
    movl $0, %eax
    setne %al 
 _end1:
+   movl   %ebp, %esp
+   pop    %ebp 
    ret

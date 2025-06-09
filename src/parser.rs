@@ -1,6 +1,6 @@
 use crate::tokens::{Token, Func, Statement, Exp, Term, Factor, Constant};
-use crate::tokens::{UnOp, BinOp, ExpBinOp, TermBinOp};
-use crate::tokens::{ExpType, TermType, FactorType};
+use crate::tokens::{UnOp, BinOp, ExpBinOp, TermBinOp, Assign};
+use crate::tokens::{ExpType, TermType, FactorType, StatementType};
 pub fn parse_func(tokens: &Vec<Token>) -> Func {
     let mut tok = tokens.iter().peekable();
     if *tok.next().unwrap() != Token::Int {   //check function starts with "int"
@@ -24,25 +24,46 @@ pub fn parse_func(tokens: &Vec<Token>) -> Func {
         panic!();
     }
 
-    let statement = parse_statement(&mut tok); //get return statement
-
-    if *tok.next().unwrap() != Token::RightBrace {
-        panic!();
+    let mut statements: Vec<Statement> = Vec::new();
+    while(**tok.peek().unwrap() != Token::RightBrace){
+        statements.push(parse_statement(&mut tok)); //get return statement
     }
-    let func = Func::new(statement, func_tok);
+    let func = Func::new(statements, func_tok);
     return func
 }
 
 fn parse_statement(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Statement{
-    if *tok.next().unwrap() != Token::Return {
-        panic!();
+    let statement = if (**tok.peek().unwrap() == Token::Return) {
+        println!("statement return");
+        tok.next();
+        let expr = parse_expression(tok);
+        Statement::new(StatementType::Return(Box::new(expr)))
     }
-    let expr = parse_expression(tok);
-    
+    else if(**tok.peek().unwrap() == Token::Int){
+        println!("statement declare");
+        tok.next();
+        let id = match *tok.next().unwrap() {  //get function name
+            Token::Identifier(ref v) => v.clone(), 
+            _ => panic!()
+        };
+        let inner_statement = if(**tok.peek().unwrap() == Token::Assignment){
+            tok.next();
+            let expr = parse_expression(tok);   
+            Statement::new(StatementType::Declaration(Assign::new(id, Some(Box::new(expr)))))
+        }
+        else{
+            Statement::new(StatementType::Declaration(Assign::new(id, None)))
+        };
+        inner_statement
+    }
+    else{
+        println!("statement expression");
+        let expr = parse_expression(tok);
+        Statement::new(StatementType::Exp(Box::new(expr)))
+    };           
     if *tok.next().unwrap() != Token::SemiColon {
         panic!();
     }
-    let statement = Statement::new(expr);
     statement
 }
 
@@ -67,7 +88,24 @@ F: Fn(&mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType, {  //ge
 }
 
 fn parse_expression(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Exp{
-    Exp::new(parse_or(tok))
+    let exp = if let Token::Identifier(ref v) = **tok.peek().unwrap() {  //get function name
+        let mut iter = tok.clone();
+        iter.next();
+        let inner_exp = if (**iter.peek().unwrap() == Token::Assignment) {
+            tok.next();
+            tok.next();
+            println!("parse expression assign");
+            Exp::new(ExpType::Assign(Assign::new(v.clone(),Some(Box::new(parse_expression(tok))))))
+        } 
+        else{
+            Exp::new(parse_or(tok))
+        };
+        inner_exp
+    } 
+    else{
+        Exp::new(parse_or(tok))
+    };
+    exp
 }
 
 fn parse_or(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> ExpType {
@@ -117,6 +155,7 @@ fn parse_term(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Exp
 }
 
 fn parse_factor(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> Factor{
+    println!("parse factor");
     let factor = match tok.next().unwrap() {
         Token::LeftParen => {  //exp
             let exp = parse_expression(tok);
@@ -131,6 +170,10 @@ fn parse_factor(tok: &mut std::iter::Peekable<std::slice::Iter<'_, Token>>) -> F
         },
         token if token.is_un_op() => {
             FactorType::Unop(UnOp::new(token.clone(), Box::new(parse_factor(tok))))
+        },
+        Token::Identifier(ref v) =>{
+            println!("parse factor: {}", v);
+            FactorType::Id(v.clone())
         }
         _ => panic!()
     };

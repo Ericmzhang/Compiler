@@ -1,5 +1,7 @@
 .global main
 main:
+   push   %ebp
+   movl   %esp, %ebp
    movl    $6, %eax
    push    %eax
    movl    $3, %eax
@@ -13,4 +15,6 @@ main:
    pop     %eax
    cdq
    idivl    %ecx
+   movl   %ebp, %esp
+   pop    %ebp 
    ret

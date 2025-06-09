@@ -23,11 +23,20 @@ pub enum Token {
     Leq,  //<=
     Gt,
     Geq,
+    Assignment, //=
     EOF,
 }
 
 #[derive(Debug)]
+pub enum StatementType {
+    Return(Box<Exp>),
+    Exp(Box<Exp>),
+    Declaration(Assign),
+}
+
+#[derive(Debug)]
 pub enum ExpType {
+    Assign(Assign),
     Term(Box<Term>),
     LogAndExp(Box<ExpType>),
     EqExp(Box<ExpType>),
@@ -46,7 +55,8 @@ pub enum TermType {
 pub enum FactorType {
     Exp(Box<Exp>),
     Unop(UnOp),
-    Constant(Constant)
+    Constant(Constant),
+    Id(String),
 }
 
 #[derive(Debug)]
@@ -78,19 +88,25 @@ pub struct TermBinOp {
 }
 
 #[derive(Debug)]
+pub struct Assign{ //used for both assigning and declaring vars
+    pub id: String,
+    pub exp: Option<Box<Exp>>
+}
+
+#[derive(Debug)]
 pub struct Program {
     pub func: Func
 }
 
 #[derive(Debug)]
 pub struct Func {
-    pub statement: Statement, //function statement (ie return 0)
+    pub statements: Vec<Statement>, //function statement (ie return 0)
     pub identifier: String,   //function name
 }
 
 #[derive(Debug)]
 pub struct Statement {
-    pub exp: Exp
+    pub value: StatementType
 }
 
 #[derive(Debug)]
@@ -152,6 +168,15 @@ impl TermBinOp {
     }
 }
 
+impl Assign {
+    pub fn new(id: String, exp: Option<Box<Exp>>) -> Assign {
+        Assign{
+            id: id,
+            exp: exp,
+        }
+    }
+}
+
 impl Token {
     pub fn is_un_op(&self) -> bool {
         matches!(self, Token::Negation | Token::BitwiseComplement | Token::LogicalNegation)
@@ -169,9 +194,9 @@ impl Program {
 
 impl Func {
     // Define a method on the `Person` struct
-    pub fn new(statement: Statement, identifier: String) -> Func {
+    pub fn new(statements: Vec<Statement>, identifier: String) -> Func {
         Func{
-            statement: statement,
+            statements: statements,
             identifier: identifier.to_string()
         }
     }
@@ -179,9 +204,9 @@ impl Func {
 
 impl Statement {
     // Define a method on the `Person` struct
-    pub fn new(exp: Exp) -> Statement {
+    pub fn new(value: StatementType) -> Statement {
         Statement{
-            exp: exp
+            value: value
         }
     }
 }

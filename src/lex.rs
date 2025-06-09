@@ -53,6 +53,9 @@ pub fn lex(input_file: &String) -> Vec<Token> {
                     iter.next();
                     tokens.push(Token::Eq);
                 }
+                else{
+                    tokens.push(Token::Assignment);
+                }
             }
             '<' => {
                 if iter.peek() == Some(&'=') {
